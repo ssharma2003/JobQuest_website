@@ -8,10 +8,12 @@ import cors from "cors";
 import { errorMiddleware } from "./middlewares/error.js";
 import cookieParser from "cookie-parser";
 import fileUpload from "express-fileupload";
+import mongoose from "mongoose";
 
 const app = express();
 config({ path: "./config/config.env" });
 
+dbConnection()
 app.use(
   cors({
     origin: [process.env.FRONTEND_URL],
@@ -31,32 +33,13 @@ app.use(
   })
 );
 
-app.get('/',(req,res)=>{
-  if(mongoose.connection.readyState === 1){
-      res.status(200).json([{
-          "status": "success",
-          "code": 200,
-          "message": 'To do List',
-          "database": "Connected to MongoDb"
-      }])
-  }
-  else{
-      res.status(200).json([{
-          "status": "success",
-          "code": 200,
-          "message": 'To do List',
-          "database": "Not connected to MongoDb"
-      }])
-  }
-  
-})
 
 
 
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/job", jobRouter);
 app.use("/api/v1/application", applicationRouter);
-dbConnection();
+
 
 app.use(errorMiddleware);
 export default app;
